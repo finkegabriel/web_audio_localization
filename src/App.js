@@ -11,7 +11,6 @@ import { ReactMic } from "react-mic";
 import { useState } from "react";
 
 function App() {
-  document.title = "Audio Localization"
   const [record, setRecord] = useState(false);
   var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   var oscillator = audioCtx.createOscillator();
