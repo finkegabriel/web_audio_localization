@@ -1,23 +1,96 @@
-import logo from './logo.svg';
-import './App.css';
+import { VOLUME } from "./lib/consts";
+import {
+  LineChart,
+  Line,
+  Tooltip,
+  CartesianGrid,
+  XAxis,
+  Legend,
+} from "recharts";
+import WaveSurfer from "wavesurfer";
+import { ReactMic } from "react-mic";
+import { useState } from "react";
+
+const handleGraph = () => {
+  WaveSurfer.create({
+    container: "#waveform",
+    waveColor: "violet",
+    progressColor: "purple",
+  });
+};
 
 function App() {
+  const [toggle, setToggle] = useState(false);
+  const [record, setRecord] = useState(false);
+  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  var oscillator = audioCtx.createOscillator();
+
+  const handleStart = () => {
+    oscillator.type = "sine";
+    oscillator.frequency.value = 20; // value in hertz
+    oscillator.volume = VOLUME;
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+    // handleGraph();
+    console.log("START");
+  };
+  const handleStop = () => {
+    oscillator.stop();
+    console.log("STOP");
+  };
+
+  const startRecording = () => {
+    setRecord(true);
+  };
+
+  const stopRecording = () => {
+    setRecord(false);
+  };
+
+  const onData = (recordedBlob) => {
+    console.log("chunk of real-time data is: ", recordedBlob);
+  };
+
+  const onStop = (recordedBlob) => {
+    console.log("recordedBlob is: ", recordedBlob);
+  };
+
+  document.title = "Acoustic Location";
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input onClick={handleStart} type="button" value="start" name="start" />
+      <input onClick={handleStop} type="button" value="stop" name="stop" />
+      <div id="waveform"></div>
+      <ReactMic
+        record={() => setToggle(!toggle)}
+        className="sound-wave"
+        onStop={onStop}
+        onData={onData}
+        strokeColor="#000000"
+        backgroundColor="#FF4081"
+      />
+      <button onClick={startRecording} type="button">
+        Start
+      </button>
+      <button onClick={stopRecording} type="button">
+        Stop
+      </button>
+      <LineChart
+        width={400}
+        height={400}
+        data={[
+          { name: "POINT_1", FREQ: 5, TIME: 20 },
+          { name: "POINT_2", FREQ: 8, TIME: 23 },
+        ]}
+        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+      >
+        <XAxis dataKey="Audio" />
+        <Tooltip />
+        <CartesianGrid stroke="#f5f5f5" />
+        <Legend />
+        <Line type="monotone" dataKey="FREQ" stroke="#ff7300" yAxisId={0} />
+        {/* <Line type="monotone" dataKey="TIME" stroke="#387908" yAxisId={1} /> */}
+      </LineChart>
     </div>
   );
 }
