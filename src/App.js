@@ -11,8 +11,7 @@ import { ReactMic } from "react-mic";
 import { useState } from "react";
 
 function App() {
-  const [toggle, setToggle] = useState(false);
-  const [setRecord] = useState(false);
+  const [record, setRecord] = useState(false);
   var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   var oscillator = audioCtx.createOscillator();
 
@@ -53,7 +52,7 @@ function App() {
       <input onClick={handleStop} type="button" value="stop" name="stop" />
       <div id="waveform"></div>
       <ReactMic
-        record={() => setToggle(!toggle)}
+        record={() => setRecord(!record)}
         className="sound-wave"
         onStop={onStop}
         onData={onData}
