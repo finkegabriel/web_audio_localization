@@ -7,21 +7,12 @@ import {
   XAxis,
   Legend,
 } from "recharts";
-import WaveSurfer from "wavesurfer";
 import { ReactMic } from "react-mic";
 import { useState } from "react";
 
-const handleGraph = () => {
-  WaveSurfer.create({
-    container: "#waveform",
-    waveColor: "violet",
-    progressColor: "purple",
-  });
-};
-
 function App() {
   const [toggle, setToggle] = useState(false);
-  const [record, setRecord] = useState(false);
+  const [setRecord] = useState(false);
   var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   var oscillator = audioCtx.createOscillator();
 
