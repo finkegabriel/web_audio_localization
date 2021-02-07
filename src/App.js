@@ -1,4 +1,4 @@
-import { VOLUME } from "./lib/consts";
+import { VOLUME,FREQ } from "./lib/consts";
 import {
   LineChart,
   Line,
@@ -12,18 +12,19 @@ import { useState } from "react";
 
 function App() {
   const [record, setRecord] = useState(false);
+  const [data, setData] = useState({FREQ:0});
   var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   var oscillator = audioCtx.createOscillator();
 
   const handleStart = () => {
     oscillator.type = "sine";
-    oscillator.frequency.value = 20; // value in hertz
+    oscillator.frequency.value = FREQ; // value in hertz
     oscillator.volume = VOLUME;
     oscillator.connect(audioCtx.destination);
     oscillator.start();
-    // handleGraph();
     console.log("START");
   };
+
   const handleStop = () => {
     oscillator.stop();
     console.log("STOP");
@@ -39,6 +40,7 @@ function App() {
 
   const onData = (recordedBlob) => {
     console.log("chunk of real-time data is: ", recordedBlob);
+    setData(recordedBlob.size);
   };
 
   const onStop = (recordedBlob) => {
@@ -69,8 +71,7 @@ function App() {
         width={400}
         height={400}
         data={[
-          { name: "POINT_1", FREQ: 5, TIME: 20 },
-          { name: "POINT_2", FREQ: 8, TIME: 23 },
+          { name: "POINT_1", FREQ: data.size },
         ]}
         margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
       >
